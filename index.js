@@ -3,7 +3,20 @@ var gracenode = require('../gracenode');
 var log  = gracenode.log.create('encrypt');
 var uuid = require('node-uuid');
 
+function makeString(str) {
+	
+	if (!isNaN(str)) {
+		return str.toString();
+	}
+	
+	return str;
+	
+}
+
 module.exports.createHash = function (str, cost, cb) {
+	
+	str = makeString(str);
+	
 	bcrypt.genSalt(cost || 10, function (error, salt) {
 		if (error) {
 			return cb(error);
@@ -15,24 +28,31 @@ module.exports.createHash = function (str, cost, cb) {
 			cb(null, hash);
 		});
 	});
+	
 };
 
 module.exports.validateHash = function (str, hash, cb) {
+	
+	str = makeString(str);
+	
 	bcrypt.compare(str, hash, function (error, res) {
 		if (error) {
 			return cb(error);
 		}
 		cb(null, res);
 	});
+	
 };
 
 module.exports.createSalt = function (cost, cb) {
+	
 	bcrypt.genSalt(cost || 10, function (error, salt) {
 		if (error) {
 			return cb(error);
 		}
 		cb(error, salt);
 	});
+	
 };
 
 module.exports.uuid = function (version, options, buffer, offset) {
